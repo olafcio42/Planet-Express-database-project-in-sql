@@ -1,0 +1,33 @@
+Planet Express to wiodąca firma transportowa specjalizująca się w międzygwiezdnym przewozie ładunków i pasażerów, która prowadzi szczegółową ewidencję swojej floty kosmicznej. 
+
+1. Ewidencja floty
+
+Każdy statek posiada unikalny identyfikator (ID), określający jego model, typ napędu, liczbę wykonanych lotów oraz liczbę napraw stopnia krytycznego. Dodatkowo monitorowany jest status gotowości do kolejnych misji oraz możliwość przewożenia ludzi. Statki mogą być modyfikowane za pomocą dedykowanych modułów, takich jak napęd Warp czy kapsuły ratunkowe, które zwiększają ich funkcjonalność.
+
+2. Ewidencja lotów
+
+Każda misja transportowa rejestrowana jest w systemie i przypisywana do konkretnego statku kosmicznego. Informacje obejmują rok wysłania misji, napęd używany podczas lotu, a także dane o transporcie pasażerów. Każda misja ma określony punkt docelowy opisany sektorem przestrzeni oraz szczegółowym identyfikatorem docelowej planety lub stacji kosmicznej.
+
+Loty mogą obejmować zarówno przewóz ludzi, jak i transport różnorodnych ładunków. Organizacja transportu uwzględnia możliwość podzielenia ładunków pomiędzy różne misje, a także możliwość przypisania pasażerów do różnych lotów w zależności od ich miejsca docelowego.
+
+3. Ewidencja ładunku
+
+Każdy ładunek rejestrowany w systemie posiada swój unikalny identyfikator oraz szczegółowe informacje opisujące jego kategorię. Waga ładunku wyrażona jest w kilotonach. Specyfika transportu międzygwiezdnego umożliwia podział dużych ładunków na mniejsze partie, które mogą być przewożone w różnych lotach w zależności od dostępnych zasobów i harmonogramu misji.
+
+4. Ewidencja wyposażenia/załogi statków
+
+Załoga statków składa się z zaawansowanych systemów AI i robotów z specjalizacjami, które mogą być dostosowywane do wymagań konkretnej misji. Rejestrowane są dane dotyczące poziomu gotowości systemów oraz ich specjalizacji wraz z ID systemu AI.
+
+5. Ewidencja kontrahentów i umów
+
+Każdy kontrahent posiada swój unikalny identyfikator, nazwę, typ działalności oraz dane kontaktowe. Umowy opisują rodzaj przewożonych ładunków, ich wartość oraz rok zawarcia. Każda umowa może obejmować transport towarów w różnych misjach.
+
+6. Moduły statku
+
+Każdy statek kosmiczny może być rozbudowywany poprzez przypisanie różnorodnych modułów. Każdy moduł posiada swój unikalny identyfikator, opis funkcjonalności oraz stan techniczny. Moduły mogą być przypisywane do różnych statków w zależności od ich stanu technicznego i wymagań misji.
+
+7. Kapsuły hibernacyjne
+Każda kapsuła posiada unikalny identyfikator, określoną maksymalną liczbę pasażerów, którą może obsłużyć, oraz dane dotyczące wytrzymałości na eksploatację wyrażone w latach oraz status użytkownika.
+
+8. Pasażerowie
+Każdy pasażer posiada unikalny identyfikator INOIT oraz dane osobowe, takie jak imię i nazwisko, wiek biologiczny i wiek chronologiczny (obejmujący czas spędzony w hibernacji). Rejestrowany jest status medyczny pasażera, uwzględniający potencjalne wymagania specjalne podczas transportu. W ramach systemu Planet Express pasażerowie mogą być przypisywani do różnych lotów, w zależności od ich trasy podróży i dostępności miejsc. Pasażerowie mogą podróżować wielokrotnie i są łączeni z misjami transportowymi oraz kapsułami w sposób elastyczny, umożliwiający optymalne zarządzanie trasami.
