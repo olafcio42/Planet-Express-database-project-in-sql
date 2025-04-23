@@ -1,0 +1,125 @@
+-- Logowania zmian
+CREATE TABLE Logi_Konserwacji (
+    ID_log NUMBER PRIMARY KEY,
+    ID_statku NUMBER,
+    data_kontroli DATE,
+    stary_status VARCHAR2(50),
+    nowy_status VARCHAR2(50),
+    powod_zmiany VARCHAR2(200),
+    wykonawca VARCHAR2(50)
+);
+
+-- Sekwencja dla ID logów
+CREATE SEQUENCE seq_logi_konserwacji
+    START WITH 1
+    INCREMENT BY 1
+    NOCACHE
+    NOCYCLE;
+
+-- Główna procedura
+CREATE OR REPLACE PROCEDURE AktualizujStanTechniczny(
+    p_data_kontroli IN DATE DEFAULT SYSDATE
+) IS
+    v_stary_status VARCHAR2(50);
+    v_nowy_status VARCHAR2(50);
+    v_powod VARCHAR2(200);
+    v_licznik NUMBER;
+
+BEGIN
+    -- Dla każdego statku w flocie
+    FOR statek IN (
+        SELECT
+            f.ID_statku,
+            f.model,
+            f.liczba_napraw_krytycznych,
+            f.gotowość_do_lotu,
+            k.status_użytkowania as status_kapsuły,
+            COUNT(m.ID_modułu) as liczba_modulow,
+            SUM(CASE WHEN m.stan_modułu = 'uszkodzony' THEN 1 ELSE 0 END) as uszkodzone_moduly
+        FROM Flota f
+        LEFT JOIN Moduły m ON f.ID_statku = m.ID_statku
+        LEFT JOIN Kapsuły k ON f.ID_statku = k.ID_statku
+        GROUP BY
+            f.ID_statku,
+            f.model,
+            f.liczba_napraw_krytycznych,
+            f.gotowość_do_lotu,
+            k.status_użytkowania
+    ) LOOP
+        -- Zapisz stary status
+        SELECT gotowość_do_lotu
+        INTO v_stary_status
+        FROM Flota
+        WHERE ID_statku = statek.ID_statku;
+
+        -- Logika określająca nowy status
+        IF statek.uszkodzone_moduly > 2 THEN
+            v_nowy_status := 0;
+            v_powod := 'Zbyt wiele uszkodzonych modułów: ' || statek.uszkodzone_moduly;
+        ELSIF statek.liczba_napraw_krytycznych > 5 THEN
+            v_nowy_status := 0;
+            v_powod := 'Przekroczony limit napraw krytycznych: ' || statek.liczba_napraw_krytycznych;
+        ELSIF statek.status_kapsuły = 'uszkodzona' THEN
+            v_nowy_status := 0;
+            v_powod := 'Uszkodzona kapsuła';
+        ELSE
+            v_nowy_status := 1;
+            v_powod := 'Standardowa kontrola techniczna - wszystko OK';
+        END IF;
+
+        -- Aktualizuj status statku jeśli się zmienił
+        IF v_stary_status != v_nowy_status THEN
+            UPDATE Flota
+            SET gotowość_do_lotu = v_nowy_status
+            WHERE ID_statku = statek.ID_statku;
+
+            -- Zaloguj zmianę
+            INSERT INTO Logi_Konserwacji (
+                ID_log,
+                ID_statku,
+                data_kontroli,
+                stary_status,
+                nowy_status,
+                powod_zmiany,
+                wykonawca
+            ) VALUES (
+                seq_logi_konserwacji.NEXTVAL,
+                statek.ID_statku,
+                p_data_kontroli,
+                v_stary_status,
+                v_nowy_status,
+                v_powod,
+                USER
+            );
+
+            -- Jeśli statek został unieruchomiony, dodaj nowy moduł w konserwacji
+            IF v_nowy_status = 0 THEN
+                -- Znajdź maksymalne ID_modułu
+                SELECT NVL(MAX(ID_modułu), 0) + 1
+                INTO v_licznik
+                FROM Moduły;
+
+                -- Dodaj nowy moduł w konserwacji
+                INSERT INTO Moduły (
+                    ID_modułu,
+                    ID_statku,
+                    typ_modułu,
+                    stan_modułu
+                ) VALUES (
+                    v_licznik,
+                    statek.ID_statku,
+                    'Konserwacyjny',
+                    'w konserwacji'
+                );
+            END IF;
+        END IF;
+    END LOOP;
+
+    COMMIT;
+
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        RAISE_APPLICATION_ERROR(-20001, 'Błąd w procedurze AktualizujStanTechniczny: ' || SQLERRM);
+END AktualizujStanTechniczny;
+/
