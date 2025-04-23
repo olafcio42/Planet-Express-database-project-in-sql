@@ -1,0 +1,69 @@
+@startuml Planet Express Database
+
+' Styling
+skinparam class {
+    BackgroundColor LightBlue
+    ArrowColor Black
+    BorderColor Navy
+}
+
+class Employee {
+    + employee_id: INT [PK]
+    + first_name: VARCHAR(50)
+    + last_name: VARCHAR(50)
+    + position: VARCHAR(100)
+    + hire_date: DATE
+    + salary: DECIMAL(10,2)
+    + species: VARCHAR(50)
+}
+
+class Delivery {
+    + delivery_id: INT [PK]
+    + date: DATETIME
+    + status: VARCHAR(20)
+    + cost: DECIMAL(10,2)
+    + customer_id: INT [FK]
+    + ship_id: INT [FK]
+}
+
+class Customer {
+    + customer_id: INT [PK]
+    + name: VARCHAR(100)
+    + planet: VARCHAR(50)
+    + address: VARCHAR(200)
+    + contact_info: VARCHAR(100)
+}
+
+class Ship {
+    + ship_id: INT [PK]
+    + name: VARCHAR(50)
+    + model: VARCHAR(50)
+    + manufacturing_date: DATE
+    + status: VARCHAR(20)
+}
+
+class Package {
+    + package_id: INT [PK]
+    + delivery_id: INT [FK]
+    + weight: DECIMAL(8,2)
+    + dimensions: VARCHAR(50)
+    + contents: VARCHAR(200)
+    + hazard_level: INT
+}
+
+class Crew_Assignment {
+    + assignment_id: INT [PK]
+    + delivery_id: INT [FK]
+    + employee_id: INT [FK]
+    + role: VARCHAR(50)
+}
+
+' Relationships
+Customer "1" -- "*" Delivery : places
+Delivery "*" -- "1" Ship : uses
+Delivery "1" -- "*" Package : contains
+Delivery "*" -- "*" Employee : assigned to
+Crew_Assignment }-- Employee
+Crew_Assignment }-- Delivery
+
+@enduml
